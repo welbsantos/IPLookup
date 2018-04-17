@@ -1,0 +1,95 @@
+  html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  #map {
+    height: 94% !important;
+  }
+  .leaflet-container {
+    overflow: hidden;
+  }
+  body {
+    margin:0;
+    padding:0px;
+    font:14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  }
+  a {
+    color:#00B7FF;
+  }
+  #leg, #leg_title {
+    position:absolute;
+    top:50px;
+    right:10px;
+    width:100px;
+    padding:10px;
+    background:rgba(34,34,34,1);
+    color:#999;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:12px;
+    line-height:18px;
+    border-radius:3px;
+    max-height:80%;
+    overflow:auto;
+  }
+  #leg_title {
+    top:10px;
+  }
+  #leg_items {
+    position:relative;
+    margin-left:5px;
+    top:-1px
+  }  
+  body {
+    background-color: #222;
+    color: #fff;
+  }
+  
+  .window {
+    z-index: 5 !important;
+    border-radius: 4px;
+    width: 50%;
+    padding: 20px;
+    align-self: center;
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .search-box {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    color: tomato;
+  }
+  
+  .search-box:focus {
+    outline: none;
+  }
+  
+  .window:after {
+    content: '';
+    position: fixed;
+    background-color: rgba(0,0,0,0.3);
+    filter:blur(5px);
+    margin-top: 60px;
+    width: 50%;
+    height: 10px;
+  }
+  
+  .footer {
+    align-self: flex-end;
+  }
+  
+  .focus-lift {
+    transform: translateY(-60px);
+  }
+
+  #map{
+    z-index: 2 !important;
+  }
+
+  .leaflet-pane {
+    z-index: 3 !important;
+    position: absolute;
+    left: 0;
+    top: 20px !important;
+}

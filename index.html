@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IPLookup</title>
+    <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.css' />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet.js"></script>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="window">
+        <input class="search-box" type="text" placeholder="Enter IP..."></input>
+    </div>
+    <br>
+    <div id="map"></div>
+    <script>
+        var marker;
+        var map;
+        window.jquery = window.$ = require('jquery');
+        $('#map').hide();
+        map = L.map('map');
+        map.on('click', onClick);
+        const request = require('request');
+        $('.search-box').keydown(function(e) {
+                if(e.keyCode == 13)
+                {
+                    request('https://ipapi.co/'+stripHTML($('.search-box').val())+'/json/', (r,s,b) => {
+                    if(b.length > 0) {
+                        var results = JSON.parse(b);
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+                        console.log(results);
+                        $('#map').show();
+                        map.setView([results.latitude,results.longitude], 14);
+                        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                                maxZoom: 18,
+                                minZoom: 12
+                        }).addTo(map);
+                        marker = L.marker([results.latitude,results.longitude]).addTo(map);
+                        marker.bindPopup("<b>"+results.org+"</b><br>"+results.region+"<br>"+results.postal + "<br>"+results.region_code).openPopup();
+                    }
+                });
+            }
+        });
+        function onClick(e) {
+            e.preventDefault();
+        }
+        function addLayer(layer, name) {
+            var leaf_layer;
+            if (layer.type == "MultiPoint") {
+                leaf_layer = L.geoJson(layer, { pointToLayer: function (feature, latlng) {return L.circleMarker(latlng, layer.style); }})
+                leaf_layer.bindPopup(layer.type);
+            } else if (layer.type == "MultiLineString") {
+                leaf_layer = L.geoJson(layer, {style: layer.style });
+                leaf_layer.bindPopup(layer.type);
+            } else  {
+                leaf_layer = L.geoJson(layer, {
+                    style: function(feature) {
+                        switch (feature.properties.style) {
+                        case 'Orange': return {color: "#ff0000"};
+                        case 'Blue': return {color: "#0000ff"};
+                    }
+                    },
+                    onEachFeature: function (feature, layer) {
+                         layer.bindPopup(feature.properties.name);
+                     }
+                 });
+            }
+            leaf_layer.addTo(map);
+            
+            $('#' + name).click(function(e) {
+                
+                if (map.hasLayer(leaf_layer)) {
+                    map.removeLayer(leaf_layer);
+                } else {
+                    map.addLayer(leaf_layer);
+                }
+            });
+        }
+        function stripHTML(input) {
+            return input.replace(/<(?:.|\n)*?>/gm, '');
+        }
+    </script>
+</body>
+</html>
