@@ -26,7 +26,7 @@
         $('.search-box').keydown(function(e) {
                 if(e.keyCode == 13)
                 {
-                    request('https://ipapi.co/'+stripHTML($('.search-box').val())+'/json/', (r,s,b) => {
+                    request('http://ipapi.co/'+stripHTML($('.search-box').val())+'/json/', (r,s,b) => {
                     if(b.length > 0) {
                         var results = JSON.parse(b);
                         if (marker) {
