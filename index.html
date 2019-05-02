@@ -11,22 +11,37 @@
 </head>
 <body>
     <div class="window">
-        <input class="search-box" type="text" placeholder="Enter IP..."></input>
+        <input class="search-box" type="text" id="txt_ip" placeholder="Enter IP..."></input>
     </div>
     <br>
     <div id="map"></div>
     <script>
+
+        const request = require('request');
+        request('http://ipapi.co/ip', (error, responde, body) => {
+            if(body.length > 0) {
+                var defaultIp = body;
+                document.getElementById('txt_ip').value = defaultIp;
+                drawMap();
+            }
+        });
+
         var marker;
         var map;
         window.jquery = window.$ = require('jquery');
         $('#map').hide();
         map = L.map('map');
         map.on('click', onClick);
-        const request = require('request');
+        
         $('.search-box').keydown(function(e) {
                 if(e.keyCode == 13)
                 {
-                    request('http://ipapi.co/'+stripHTML($('.search-box').val())+'/json/', (r,s,b) => {
+                  drawMap();  
+                }
+            });
+        
+        function drawMap() {
+            request('http://ipapi.co/'+stripHTML($('.search-box').val())+'/json/', (r,s,b) => {
                     if(b.length > 0) {
                         var results = JSON.parse(b);
                         if (marker) {
@@ -43,9 +58,8 @@
                         marker = L.marker([results.latitude,results.longitude]).addTo(map);
                         marker.bindPopup("<b>"+results.org+"</b><br>"+results.region+"<br>"+results.postal + "<br>"+results.region_code).openPopup();
                     }
-                });
-            }
-        });
+        })};
+
         function onClick(e) {
             e.preventDefault();
         }
