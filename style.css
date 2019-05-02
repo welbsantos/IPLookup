@@ -59,6 +59,7 @@
     background-color: transparent;
     border: none;
     color: tomato;
+    font-size: 20px;
   }
   
   .search-box:focus {
